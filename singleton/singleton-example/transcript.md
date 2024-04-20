@@ -35,11 +35,90 @@ public class Singleton {
 
 - Lazy Initialization Singleton: The instance is created only when it is first requested. Lazy Initialization Singleton is useful when you want to defer the creation of the instance until it is actually needed, potentially saving resources if the Singleton is not always required. However, it's important to note that this approach may not be thread-safe in a multi-threaded environment without additional synchronization mechanisms.
 
+```java
+public class LazyInterestCalculator {
+
+  private static LazyInterestCalculator instance;
+
+  private LazyInterestCalculator() {
+  }
+
+  public static LazyInterestCalculator getInstance() {
+    if (instance == null) {
+      instance = new LazyInterestCalculator();
+    }
+    return instance;
+  }
+
+  public BigDecimal calculateSimpleInterest(BigDecimal principal, BigDecimal rate, BigDecimal time) {
+    return principal.multiply(rate).multiply(time).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+  }
+
+}
+```
+
 - Eager Initialization Singleton: The instance is created when the class is loaded, regardless of whether it is needed. Eager Initialization Singleton provides thread safety and simplicity in implementation but may consume resources unnecessarily and lack the flexibility of lazy loading.
+
+```java
+public class EagerInterestCalculator {
+
+  private static final EagerInterestCalculator instance = new EagerInterestCalculator();
+
+  private EagerInterestCalculator() {
+  }
+
+  public static EagerInterestCalculator getInstance() {
+    return instance;
+  }
+
+  public BigDecimal calculateSimpleInterest(BigDecimal principal, BigDecimal rate, BigDecimal time) {
+    return principal.multiply(rate).multiply(time).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+  }
+
+}
+
+```
 
 - Thread-Safe Singleton: Ensures that the Singleton instance is created in a thread-safe manner, preventing multiple threads from creating separate instances.
 
     - The getInstance() method first checks if the instance is null, and if so, it enters a synchronized block to ensure only one thread can create the instance.
     - The volatile keyword is used to ensure visibility of changes to instance variable across threads.
 
+```java
+public class ThreadSafeInterestCalculator {
+
+  private static volatile ThreadSafeInterestCalculator instance;
+
+  private ThreadSafeInterestCalculator() {
+  }
+
+  // Double-checked locking for thread safety
+  public static ThreadSafeInterestCalculator getInstance() {
+    if (instance == null) {
+      synchronized (ThreadSafeInterestCalculator.class) {
+        if (instance == null) {
+          instance = new ThreadSafeInterestCalculator();
+        }
+      }
+    }
+    return instance;
+  }
+
+  public synchronized BigDecimal calculateSimpleInterest(BigDecimal principal, BigDecimal rate, BigDecimal time) {
+    return principal.multiply(rate).multiply(time).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+  }
+
+}
+```
+
 - Enum Singleton: Uses an enum to create a Singleton with inherent serialization and thread safety. In Java, enum types are a special kind of class that can have constructors, methods, and instance variables like a regular class, but they have a finite set of predefined instances (enum constants). This makes enum types a convenient and safe way to implement the Singleton pattern with built-in thread safety and serialization guarantees.
+
+```java
+public enum EnumInterestCalculator {
+  INSTANCE;
+
+  public BigDecimal calculateSimpleInterest(BigDecimal principal, BigDecimal rate, BigDecimal time) {
+    return principal.multiply(rate).multiply(time).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+  }
+}
+```
