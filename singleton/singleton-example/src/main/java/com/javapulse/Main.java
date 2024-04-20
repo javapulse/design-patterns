@@ -12,6 +12,9 @@ public class Main {
 		 */
 		Desktop desktop = Desktop.getDesktop();
 
+		Singleton singleton = Singleton.getInstance();
+		singleton.doSomething();
+
 		BigDecimal principal = new BigDecimal("1000");
 		BigDecimal rate = new BigDecimal("5");
 		BigDecimal time = new BigDecimal("2");
